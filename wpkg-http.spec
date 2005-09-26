@@ -1,3 +1,5 @@
+#TODO:
+#- config for apache
 Summary:	WPKG - HTTP backend
 Summary(pl):	WPKG - Interfejs Webowy
 Name:		wpkg-http
@@ -13,6 +15,8 @@ URL:		http://wpkg.sourceforge.net/
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Requires:	wpkg
+Requires:	httpd
+Requires:	php
 
 %description
 Web backend for configuration WPKG.
@@ -25,14 +29,14 @@ Webowy konfigurator dla WPKG
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_datadir}/%{name}/{classes,config,libs,locale,packages,root,smarty,xml},%{_sysconfdir}/%{name}}
-rm INSTALL
+
+rm INSTALL xml/{hosts.xml,packages.xml,profiles.xml} root/wpkg.tar.gz
 cp -Rv *		$RPM_BUILD_ROOT%{_datadir}/%{name}/
 #install hosts.xml 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/hosts.xml
 #install packages.xml	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/packages.xml
 #install profiles.xml	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/profiles.xml
 
 cd $RPM_BUILD_ROOT%{_datadir}/%{name}/xml
-rm ./*
 ln -s %{_sysconfdir}/%{name}/hosts.xml	hosts.xml
 ln -s %{_sysconfdir}/%{name}/packages.xml packages.xml 
 ln -s %{_sysconfdir}/%{name}/profiles.xml profiles.xml 
@@ -45,6 +49,6 @@ rm -rf $RPM_BUILD_ROOT
 #%doc README TODO GPL-2 LICENSE
 #%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*
 %dir %{_datadir}/%{name}
-%{_datadir}/%{name}
+%{_datadir}/%{name}/*
 #%attr(755,root,root) %{_datadir}/%{name}/wpkg.js
 #%{_datadir}/%{name}/*.xml
