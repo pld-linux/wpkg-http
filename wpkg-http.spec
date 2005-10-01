@@ -9,7 +9,7 @@ License:	GPL v.2
 Group:		Applications
 Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{version}.tar.gz
 # Source0-md5:	033e6251fb80db3ec1207f83155a5b6b
-#Source1:	%{name}-
+Source1:	%{name}_apache.conf
 #Source2:	%{name}-
 URL:		http://wpkg.sourceforge.net/
 BuildArch:	noarch
@@ -28,13 +28,14 @@ Webowy konfigurator dla WPKG
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir}/%{name}/{classes,config,libs,locale,packages,root,smarty,xml},%{_sysconfdir}/%{name}}
+install -d $RPM_BUILD_ROOT{%{_datadir}/%{name}/{classes,config,libs,locale,packages,root,smarty,xml},%{_sysconfdir}/{%{name},httpd/httpd.conf}}
 
 rm INSTALL xml/{hosts.xml,packages.xml,profiles.xml} root/wpkg.tar.gz
 cp -Rv *		$RPM_BUILD_ROOT%{_datadir}/%{name}/
 #install hosts.xml 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/hosts.xml
 #install packages.xml	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/packages.xml
-#install profiles.xml	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/profiles.xml
+
+install %{SOURCE1}	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/98_wpkg-http.conf
 
 cd $RPM_BUILD_ROOT%{_datadir}/%{name}/xml
 ln -s %{_sysconfdir}/%{name}/hosts.xml	hosts.xml
@@ -47,7 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 #%doc README TODO GPL-2 LICENSE
-#%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/httpd.conf/*
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
 #%attr(755,root,root) %{_datadir}/%{name}/wpkg.js
