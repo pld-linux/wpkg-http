@@ -1,7 +1,7 @@
 #TODO:
 #- config for apache
 Summary:	WPKG - HTTP backend
-Summary(pl):	WPKG - Interfejs Webowy
+Summary(pl):	WPKG - Interfejs WWW
 Name:		wpkg-http
 Version:	06062005
 Release:	0.1
@@ -12,17 +12,18 @@ Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{version}.tar.gz
 Source1:	%{name}_apache.conf
 #Source2:	%{name}-
 URL:		http://wpkg.sourceforge.net/
+Requires:	php
+Requires:	webserver = apache
+Requires:	wpkg
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-Requires:	wpkg
-Requires:	httpd
-Requires:	php
 
 %description
 Web backend for configuration WPKG.
 
 %description -l pl
-Webowy konfigurator dla WPKG
+Konfigurator WWW dla WPKG.
+
 %prep
 %setup -q -n wpkg
 
