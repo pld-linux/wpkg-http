@@ -1,18 +1,19 @@
-# TODO:
-# - config for apache
-# - use system Smarty
+# TODO
+# - smarty cache dirs to /var/cache
 Summary:	WPKG - HTTP backend
 Summary(pl):	WPKG - Interfejs WWW
 Name:		wpkg-http
 %define	_snap 06062005
 Version:	0.0.%{_snap}
-Release:	0.1
+Release:	0.6
 License:	GPL v2
 Group:		Applications
 Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{_snap}.tar.gz
 # Source0-md5:	033e6251fb80db3ec1207f83155a5b6b
 Source1:	%{name}_apache.conf
+Patch0:		%{name}-config.patch
 URL:		http://wpkg.sourceforge.net/
+Requires:	Smarty >= 2.6.10-4
 Requires:	apache >= 1.3.33-2
 Requires:	php
 Requires:	wpkg
@@ -30,7 +31,10 @@ Konfigurator WWW dla WPKG.
 
 %prep
 %setup -q -n wpkg
+%patch0 -p1
 rm INSTALL xml/{hosts.xml,packages.xml,profiles.xml} root/wpkg.tar.gz
+
+rm -rf libs/smarty
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -42,7 +46,6 @@ cp -Rv *		$RPM_BUILD_ROOT%{_appdir}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 
-
 mv $RPM_BUILD_ROOT%{_appdir}/config/* $RPM_BUILD_ROOT%{_sysconfdir}
 cd $RPM_BUILD_ROOT%{_appdir}/config
 ln -s %{_sysconfdir}/config.xml	config.xml
@@ -50,6 +53,7 @@ cd $RPM_BUILD_ROOT%{_appdir}/xml
 ln -s %{_sysconfdir}/hosts.xml	hosts.xml
 ln -s %{_sysconfdir}/packages.xml packages.xml
 ln -s %{_sysconfdir}/profiles.xml profiles.xml
+touch $RPM_BUILD_ROOT%{_sysconfdir}/htpasswd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -69,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %dir %{_sysconfdir}
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.xml
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/htpasswd
+
 %dir %{_appdir}
 %{_appdir}/*
