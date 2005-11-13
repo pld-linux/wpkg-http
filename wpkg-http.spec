@@ -1,22 +1,26 @@
-#TODO:
-#- config for apache
+# TODO:
+# - config for apache
+# - use system Smarty
 Summary:	WPKG - HTTP backend
 Summary(pl):	WPKG - Interfejs WWW
 Name:		wpkg-http
-Version:	06062005
+%define	_snap 06062005
+Version:	0.0.%{_snap}
 Release:	0.1
-License:	GPL v.2
+License:	GPL v2
 Group:		Applications
-Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{_snap}.tar.gz
 # Source0-md5:	033e6251fb80db3ec1207f83155a5b6b
 Source1:	%{name}_apache.conf
-#Source2:	%{name}-
 URL:		http://wpkg.sourceforge.net/
+Requires:	apache >= 1.3.33-2
 Requires:	php
-Requires:	webserver = apache
 Requires:	wpkg
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_sysconfdir	/etc/%{name}
+%define		_appdir		%{_datadir}/%{name}
 
 %description
 Web backend for configuration WPKG.
@@ -26,36 +30,45 @@ Konfigurator WWW dla WPKG.
 
 %prep
 %setup -q -n wpkg
+rm INSTALL xml/{hosts.xml,packages.xml,profiles.xml} root/wpkg.tar.gz
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir}/%{name}/{classes,config,libs,locale,packages,root,smarty,xml},%{_sysconfdir}/{%{name},httpd/httpd.conf}}
+install -d $RPM_BUILD_ROOT{%{_appdir},%{_sysconfdir}}
 
-rm INSTALL xml/{hosts.xml,packages.xml,profiles.xml} root/wpkg.tar.gz
-cp -Rv *		$RPM_BUILD_ROOT%{_datadir}/%{name}/
-#install hosts.xml 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/hosts.xml
-#install packages.xml	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/packages.xml
+cp -Rv *		$RPM_BUILD_ROOT%{_appdir}
+#install hosts.xml 	$RPM_BUILD_ROOT%{_sysconfdir}/hosts.xml
+#install packages.xml	$RPM_BUILD_ROOT%{_sysconfdir}/packages.xml
 
-install %{SOURCE1}	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/98_wpkg-http.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 
-mv $RPM_BUILD_ROOT%{_datadir}/%{name}/config/* $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
-cd $RPM_BUILD_ROOT%{_datadir}/%{name}/config
-ln -s %{_sysconfdir}/%{name}/config.xml	config.xml
-cd $RPM_BUILD_ROOT%{_datadir}/%{name}/xml
-ln -s %{_sysconfdir}/%{name}/hosts.xml	hosts.xml
-ln -s %{_sysconfdir}/%{name}/packages.xml packages.xml 
-ln -s %{_sysconfdir}/%{name}/profiles.xml profiles.xml 
+
+mv $RPM_BUILD_ROOT%{_appdir}/config/* $RPM_BUILD_ROOT%{_sysconfdir}
+cd $RPM_BUILD_ROOT%{_appdir}/config
+ln -s %{_sysconfdir}/config.xml	config.xml
+cd $RPM_BUILD_ROOT%{_appdir}/xml
+ln -s %{_sysconfdir}/hosts.xml	hosts.xml
+ln -s %{_sysconfdir}/packages.xml packages.xml
+ln -s %{_sysconfdir}/profiles.xml profiles.xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%triggerin -- apache1 >= 1.3.33-2
+%apache_config_install -v 1 -c %{_sysconfdir}/apache.conf -n 98
+
+%triggerun -- apache1 >= 1.3.33-2
+%apache_config_uninstall -v 1 -n 98
+
+%triggerin -- apache >= 2.0.0
+%apache_config_install -v 2 -c %{_sysconfdir}/apache.conf -n 98
+
+%triggerun -- apache >= 2.0.0
+%apache_config_uninstall -v 2 -n 98
+
 %files
 %defattr(644,root,root,755)
-#%doc README TODO GPL-2 LICENSE
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/httpd.conf/*
-%dir %{_sysconfdir}/%{name}
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/*
-#%attr(755,root,root) %{_datadir}/%{name}/wpkg.js
-#%{_datadir}/%{name}/*.xml
+%dir %{_sysconfdir}
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*
+%dir %{_appdir}
+%{_appdir}/*
