@@ -1,0 +1,22 @@
+--- ./classes/main.php~	2005-05-23 19:34:59.000000000 +0300
++++ ./classes/main.php	2005-11-13 19:42:57.000000000 +0200
+@@ -181,7 +181,7 @@
+ 		 $this->smarty=new smarty_wpkg;
+ 		 $this->smarty->assign('name','Wpkg');
+ 		 //first The Config ;)
+-		 $this->xml_config=new xml_config($_SERVER["DOCUMENT_ROOT"].'/../config/config.xml');
++		 $this->xml_config=new xml_config('/etc/wpkg-http/config.xml');
+ 		 $this->xml_config->read($this->config);
+ 			 
+ 		 
+--- ./classes/smarty_wpkg.php~	2005-02-26 13:44:06.000000000 +0200
++++ ./classes/smarty_wpkg.php	2005-11-13 19:46:41.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ 
+ require('../libs/smarty_translate.php');
+-require($_SERVER["DOCUMENT_ROOT"].'/../libs/smarty/libs/Smarty.class.php');
++require_once "/usr/share/php/Smarty/Smarty.class.php";
+ 
+ 
+ class smarty_wpkg extends Smarty {
