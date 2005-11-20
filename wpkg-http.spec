@@ -14,9 +14,10 @@ Source1:	%{name}_apache.conf
 Patch0:		%{name}-config.patch
 URL:		http://wpkg.sourceforge.net/
 Requires:	Smarty >= 2.6.10-4
-Requires:	apache >= 1.3.33-2
+Requires:	webserver = apache
 Requires:	php
 Requires:	wpkg
+Conflicts:	apache1 < 1.3.33-2
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
