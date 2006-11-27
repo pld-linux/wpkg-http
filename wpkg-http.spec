@@ -1,11 +1,11 @@
 # TODO
 # - smarty cache dirs to /var/cache
+%define	_snap 06062005
 Summary:	WPKG - HTTP backend
 Summary(pl):	WPKG - Interfejs WWW
 Name:		wpkg-http
-%define	_snap 06062005
 Version:	0.0.%{_snap}
-Release:	0.6
+Release:	0.7
 License:	GPL v2
 Group:		Applications
 Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{_snap}.tar.gz
@@ -15,7 +15,7 @@ Patch0:		%{name}-config.patch
 URL:		http://wpkg.sourceforge.net/
 Requires:	Smarty >= 2.6.10-4
 Requires:	webserver = apache
-Requires:	php
+Requires:	webserver(php)
 Requires:	wpkg
 Conflicts:	apache1 < 1.3.33-2
 BuildArch:	noarch
