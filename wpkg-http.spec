@@ -2,7 +2,7 @@
 # - smarty cache dirs to /var/cache
 %define	_snap 06062005
 Summary:	WPKG - HTTP backend
-Summary(pl):	WPKG - Interfejs WWW
+Summary(pl.UTF-8):   WPKG - Interfejs WWW
 Name:		wpkg-http
 Version:	0.0.%{_snap}
 Release:	0.7
@@ -27,7 +27,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Web backend for configuration WPKG.
 
-%description -l pl
+%description -l pl.UTF-8
 Konfigurator WWW dla WPKG.
 
 %prep
