@@ -13,6 +13,7 @@ Source0:	http://dl.sourceforge.net/wpkg/%{name}-%{_snap}.tar.gz
 Source1:	%{name}_apache.conf
 Patch0:		%{name}-config.patch
 URL:		http://wpkg.sourceforge.net/
+BuildRequires:	migrate-to-webapps
 Requires:	Smarty >= 2.6.10-4
 Requires:	webserver = apache
 Requires:	webserver(php)
